@@ -1,0 +1,25 @@
+{
+  "name": "refoundit",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "REFOUNDIT - Tax Refund Service Website",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "styled-components": "^6.1.14",
+    "@tanstack/react-query": "^5.75.5",
+    "react-icons": "^5.5.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.2",
+    "@types/react-dom": "^19.1.2",
+    "@vitejs/plugin-react": "^4.4.1",
+    "vite": "^6.3.4"
+  }
+}
