@@ -274,7 +274,7 @@ export default function Hero() {
             <CredDot>·</CredDot>
             <span>בוגר קורס החזרי מס — לשכת רואי חשבון</span>
             <CredDot>·</CredDot>
-            <span>לא צריך שום עבודה מצדכם</span>
+            {/* <span>לא צריך שום עבודה מצדכם</span> */}
           </CredRow>
         </Content>
       </Container>
