@@ -131,7 +131,10 @@ export default function QuizSection() {
                 selected={selected2}
                 onToggle={(id) => toggleItem(selected2, setSelected2, id)}
                 onBack={() => setStep(1)}
-                onNext={() => setStep(3)}
+                onNext={() => {
+                  setStep(3);
+                  document.getElementById('quiz')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }}
                 nextLabel="בדוק זכאות"
               />
             )}

@@ -73,15 +73,7 @@ const CARDS = [
     action: () => window.open(`mailto:${CONTACT.email}`, '_blank'),
     btnText: 'שלחו מייל',
     btnVariant: 'outline',
-  },
-  {
-    icon: LuPhone,
-    title: 'טלפון',
-    desc: CONTACT.phoneDisplay,
-    action: () => callPhone(),
-    btnText: 'התקשרו עכשיו',
-    btnVariant: 'outline',
-  },
+  }
 ];
 
 export default function ContactInfoCards() {

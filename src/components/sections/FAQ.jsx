@@ -91,7 +91,7 @@ export default function FAQ() {
     <Section id="faq" $bg="#F7F9FC">
       <Container>
         <SectionTitle sub="כל מה שצריך לדעת על החזרי מס">
-          ❓ שאלות נפוצות
+           שאלות נפוצות 
         </SectionTitle>
         <List>
           {FAQ_DATA.map((item, i) => (

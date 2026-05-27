@@ -85,7 +85,7 @@ export default function Process() {
     >
       <Container>
         <SectionTitle light sub="הליך קצר ופשוט שמביא תוצאות">
-          ⚙️ איך התהליך עובד?
+           איך התהליך עובד?
         </SectionTitle>
         <Grid>
           {PROCESS_STEPS.map((step, i) => (

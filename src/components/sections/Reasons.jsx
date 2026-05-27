@@ -52,7 +52,7 @@ export default function Reasons() {
     <Section>
       <Container>
         <SectionTitle sub="כמעט כל שכיר בישראל זכאי להחזר!">
-          💰 הסיבות השכיחות להחזר מס
+           הסיבות השכיחות להחזר מס
         </SectionTitle>
         <TagCloud>
           {REASONS.map((r, i) => (

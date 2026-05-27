@@ -76,7 +76,7 @@ export default function ContactSection() {
     <Section id="contact" $bg="#F7F9FC">
       <Container>
         <SectionTitle sub="השאירו פרטים ונחזור אליכם בהקדם">
-          📞 צרו קשר
+           צרו קשר
         </SectionTitle>
         <Grid>
           <ContactForm onSuccess={() => setSubmitted(true)} />

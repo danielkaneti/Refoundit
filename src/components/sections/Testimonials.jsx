@@ -84,7 +84,7 @@ export default function Testimonials() {
     <Section $bg="linear-gradient(135deg, #0A1628, #1B3A5C)">
       <Container>
         <SectionTitle light sub="לקוחות שכבר קיבלו את הכסף שמגיע להם">
-          ⭐ מה אומרים עלינו?
+           מה אומרים עלינו?
         </SectionTitle>
         <Carousel>
           {TESTIMONIALS.map((t, i) => (
