@@ -8,18 +8,16 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src'),
       '@components': path.resolve(__dirname, './src/components'),
+      '@data': path.resolve(__dirname, './src/data'),
       '@hooks': path.resolve(__dirname, './src/hooks'),
       '@styles': path.resolve(__dirname, './src/styles'),
-      '@data': path.resolve(__dirname, './src/data'),
       '@utils': path.resolve(__dirname, './src/utils'),
     },
   },
   server: {
-    port: 3000,
-    open: true,
-  },
-  build: {
-    outDir: 'dist',
-    sourcemap: true,
+    port: 5173,
+    watch: {
+      usePolling: true,
+    },
   },
 });
