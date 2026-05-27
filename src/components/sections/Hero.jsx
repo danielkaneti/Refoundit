@@ -270,7 +270,7 @@ export default function Hero() {
        
 
           <CredRow $vis={vis}>
-            <span>🏅 רואה חשבון מוסמך</span>
+            <span> רואה חשבון מוסמך 🏅</span>
             <CredDot>·</CredDot>
             <span>בוגר קורס החזרי מס — לשכת רואי חשבון</span>
             <CredDot>·</CredDot>

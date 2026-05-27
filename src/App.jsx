@@ -1,4 +1,5 @@
-import { Navbar, Footer, WhatsAppFAB } from '@components/layout';
+import { useState, useCallback } from 'react';
+import { Navbar, Footer, WhatsAppFAB, PageLoader } from '@components/layout';
 import {
   Hero,
   Benefits,
@@ -12,8 +13,12 @@ import QuizSection from '@components/quiz/QuizSection';
 import ContactSection from '@components/contact/ContactSection';
 
 export default function App() {
+  const [loaded, setLoaded] = useState(false);
+  const handleLoaderDone = useCallback(() => setLoaded(true), []);
+
   return (
     <>
+      {!loaded && <PageLoader onDone={handleLoaderDone} />}
       <Navbar />
       <Hero />
       <QuizSection />
