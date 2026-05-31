@@ -1,8 +1,21 @@
 import { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { gradientShift, float } from '@styles/animations';
 import { Container, Button } from '@components/ui';
 import { openWhatsApp } from '@utils/whatsapp';
+
+const lineReveal = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0px);
+  }
+`;
 
 const HeroSection = styled.section`
   min-height: 100vh;
@@ -72,9 +85,13 @@ const Title = styled.h1`
   color: ${({ theme }) => theme.colors.white};
   line-height: 1.15;
   margin-bottom: 24px;
-  opacity: ${({ $vis }) => ($vis ? 1 : 0)};
-  transform: translateY(${({ $vis }) => ($vis ? '0' : '40px')});
-  transition: all 1s cubic-bezier(0.16, 1, 0.3, 1) 0.15s;
+`;
+
+const TitleLine = styled.span`
+  display: block;
+  opacity: 0;
+  animation: ${lineReveal} 0.85s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: ${({ $delay }) => $delay}s;
 `;
 
 const GradientText = styled.span`
@@ -205,8 +222,9 @@ export default function Hero() {
   }, []);
 
   return (
-    <HeroSection>
-      <BgCircles>
+    <HeroSection aria-labelledby="hero-heading">
+      {/* Purely decorative background elements — hidden from AT */}
+      <BgCircles aria-hidden="true">
         {[...Array(6)].map((_, i) => (
           <Circle
             key={i}
@@ -223,6 +241,7 @@ export default function Hero() {
       </BgCircles>
 
       <GradientOrb
+        aria-hidden="true"
         style={{
           top: '-20%',
           right: '-10%',
@@ -232,6 +251,7 @@ export default function Hero() {
         }}
       />
       <GradientOrb
+        aria-hidden="true"
         style={{
           bottom: '-20%',
           left: '-10%',
@@ -244,12 +264,12 @@ export default function Hero() {
       <Container>
         <Content>
 
-          <Title $vis={vis}>
-            שכירים?
-            <br />
-            <GradientText>גלו כמה כסף מגיע לכם</GradientText>
-            <br />
-            ממס הכנסה!
+          <Title id="hero-heading">
+            <TitleLine $delay={0.2}>שכירים?</TitleLine>
+            <TitleLine $delay={0.45}>
+              <GradientText>גלו כמה כסף מגיע לכם</GradientText>
+            </TitleLine>
+            <TitleLine $delay={0.7}>ממס הכנסה!</TitleLine>
           </Title>
 
           <Subtitle $vis={vis}>
@@ -260,26 +280,27 @@ export default function Hero() {
 
           <ButtonRow $vis={vis}>
             <Button size="lg" onClick={() => scrollTo('quiz')}>
-               בדקו זכאות עכשיו
+              בדקו זכאות עכשיו
             </Button>
             <Button variant="secondary" size="lg" onClick={() => openWhatsApp()}>
-               שלחו הודעה בוואטסאפ
+              שלחו הודעה בוואטסאפ
             </Button>
           </ButtonRow>
 
-       
-
           <CredRow $vis={vis}>
-            <span> רואה חשבון מוסמך 🏅</span>
-            <CredDot>·</CredDot>
+            <span>
+              רואה חשבון מוסמך{' '}
+              <span role="img" aria-label="מדליה">🏅</span>
+            </span>
+            <CredDot aria-hidden="true">·</CredDot>
             <span>בוגר קורס החזרי מס — לשכת רואי חשבון</span>
-            <CredDot>·</CredDot>
-            {/* <span>לא צריך שום עבודה מצדכם</span> */}
+            <CredDot aria-hidden="true">·</CredDot>
           </CredRow>
         </Content>
       </Container>
 
-      <ScrollIndicator>
+      {/* Decorative scroll indicator — hidden from AT */}
+      <ScrollIndicator aria-hidden="true">
         <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: 12 }}>
           גללו למטה
         </span>

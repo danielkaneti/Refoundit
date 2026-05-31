@@ -20,15 +20,27 @@ const Item = styled.div`
   box-shadow: ${({ $open, theme }) => ($open ? theme.shadows.md : 'none')};
 `;
 
-const Question = styled.div`
+/* Changed from styled.div to styled.button for full keyboard accessibility */
+const Question = styled.button`
   padding: 20px 24px;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
+  background: none;
+  border: none;
+  font-family: inherit;
+  text-align: right;
+
+  &:focus-visible {
+    outline: 3px solid ${({ theme }) => theme.colors.teal};
+    outline-offset: -3px;
+    border-radius: ${({ theme }) => theme.radii.md};
+  }
 `;
 
-const QuestionText = styled.h4`
+const QuestionText = styled.span`
   font-size: 16px;
   font-weight: 600;
   color: ${({ theme }) => theme.colors.navy};
@@ -68,16 +80,30 @@ const AnswerText = styled.p`
   line-height: 1.8;
 `;
 
-function FAQItem({ item, isOpen, onToggle }) {
+function FAQItem({ item, isOpen, onToggle, index }) {
+  const questionId = `faq-q-${index}`;
+  const answerId = `faq-a-${index}`;
+
   return (
     <Item $open={isOpen}>
-      <Question onClick={onToggle}>
+      <Question
+        id={questionId}
+        type="button"
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        aria-controls={answerId}
+      >
         <QuestionText>{item.q}</QuestionText>
-        <Toggle $open={isOpen}>
+        <Toggle $open={isOpen} aria-hidden="true">
           <Arrow $open={isOpen}>▼</Arrow>
         </Toggle>
       </Question>
-      <AnswerWrapper $open={isOpen}>
+      <AnswerWrapper
+        id={answerId}
+        role="region"
+        aria-labelledby={questionId}
+        $open={isOpen}
+      >
         <AnswerText>{item.a}</AnswerText>
       </AnswerWrapper>
     </Item>
@@ -88,10 +114,10 @@ export default function FAQ() {
   const [open, setOpen] = useState(null);
 
   return (
-    <Section id="faq" $bg="#F7F9FC">
+    <Section id="faq" $bg="#F7F9FC" aria-labelledby="faq-heading">
       <Container>
-        <SectionTitle sub="כל מה שצריך לדעת על החזרי מס">
-           שאלות נפוצות 
+        <SectionTitle id="faq-heading" sub="כל מה שצריך לדעת על החזרי מס">
+          שאלות נפוצות
         </SectionTitle>
         <List>
           {FAQ_DATA.map((item, i) => (
@@ -100,6 +126,7 @@ export default function FAQ() {
               item={item}
               isOpen={open === i}
               onToggle={() => setOpen(open === i ? null : i)}
+              index={i}
             />
           ))}
         </List>

@@ -19,6 +19,12 @@ const Card = styled.div`
           : theme.colors.gray100};
   transition: all 0.25s ease;
   transform: translateX(${({ $hovered }) => ($hovered ? '-4px' : '0')});
+
+  &:focus-visible {
+    outline: 3px solid ${({ theme }) => theme.colors.teal};
+    outline-offset: 2px;
+    border-radius: ${({ theme }) => theme.radii.md};
+  }
 `;
 
 const Checkbox = styled.div`
@@ -65,16 +71,30 @@ export default function CheckboxCard({ item, checked, onToggle }) {
   const [hov, setHov] = useState(false);
   const IconComponent = item.icon;
 
+  const handleKeyDown = (e) => {
+    if (e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      onToggle();
+    }
+  };
+
   return (
     <Card
+      role="checkbox"
+      aria-checked={checked}
+      tabIndex={0}
       $checked={checked}
       $hovered={hov}
       onClick={onToggle}
+      onKeyDown={handleKeyDown}
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
     >
-      <Checkbox $checked={checked}>{checked && '✓'}</Checkbox>
-      <IconBadge $checked={checked}>
+      {/* Visual checkbox indicator — state already conveyed via aria-checked */}
+      <Checkbox $checked={checked} aria-hidden="true">
+        {checked && '✓'}
+      </Checkbox>
+      <IconBadge $checked={checked} aria-hidden="true">
         <IconComponent strokeWidth={1.75} />
       </IconBadge>
       <Label>{item.label}</Label>

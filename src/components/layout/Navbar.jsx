@@ -37,6 +37,12 @@ const LogoLink = styled.a`
   align-items: center;
   gap: 10px;
   text-decoration: none;
+
+  &:focus-visible {
+    outline: 3px solid ${({ theme }) => theme.colors.teal};
+    outline-offset: 4px;
+    border-radius: 8px;
+  }
 `;
 
 const LogoMark = styled.div`
@@ -82,6 +88,12 @@ const NavLink = styled.a`
   &:hover {
     color: ${({ theme }) => theme.colors.teal};
   }
+
+  &:focus-visible {
+    outline: 3px solid ${({ theme }) => theme.colors.teal};
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
 `;
 
 const MobileToggle = styled.button`
@@ -95,6 +107,12 @@ const MobileToggle = styled.button`
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
     display: flex;
+  }
+
+  &:focus-visible {
+    outline: 3px solid ${({ theme }) => theme.colors.teal};
+    outline-offset: 4px;
+    border-radius: 6px;
   }
 `;
 
@@ -136,6 +154,12 @@ const MobileLink = styled.a`
   &:hover {
     color: ${({ theme }) => theme.colors.teal};
   }
+
+  &:focus-visible {
+    outline: 3px solid ${({ theme }) => theme.colors.teal};
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
 `;
 
 const scrollTo = (id) => {
@@ -148,11 +172,11 @@ export default function Navbar() {
   const scrolled = scrollY > 50;
 
   return (
-    <Nav $scrolled={scrolled}>
+    <Nav $scrolled={scrolled} aria-label="ניווט ראשי">
       <Container>
         <NavInner>
-          <LogoLink href="#">
-            <LogoMark>R</LogoMark>
+          <LogoLink href="#" aria-label="REFOUNDIT - חזרה לראש הדף">
+            <LogoMark aria-hidden="true">R</LogoMark>
             <LogoText>REFOUNDIT</LogoText>
           </LogoLink>
 
@@ -167,7 +191,12 @@ export default function Navbar() {
             </Button>
           </DesktopNav>
 
-          <MobileToggle onClick={() => setMenuOpen(!menuOpen)}>
+          <MobileToggle
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label={menuOpen ? 'סגור תפריט ניווט' : 'פתח תפריט ניווט'}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-nav-menu"
+          >
             {[0, 1, 2].map((i) => (
               <ToggleLine key={i} $open={menuOpen} $index={i} />
             ))}
@@ -176,7 +205,7 @@ export default function Navbar() {
       </Container>
 
       {menuOpen && (
-        <MobileMenu>
+        <MobileMenu id="mobile-nav-menu">
           {NAV_LINKS.map((link) => (
             <MobileLink
               key={link.href}

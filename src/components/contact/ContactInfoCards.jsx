@@ -83,7 +83,7 @@ export default function ContactInfoCards() {
         const IconComponent = card.icon;
         return (
           <Card key={card.title}>
-            <IconBox>
+            <IconBox aria-hidden="true">
               <IconComponent strokeWidth={1.75} />
             </IconBox>
             <Info>

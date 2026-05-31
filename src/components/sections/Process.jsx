@@ -67,7 +67,7 @@ function ProcessStep({ step, index }) {
 
   return (
     <StepCard ref={ref} $visible={vis} $delay={index * 0.15}>
-      <IconBubble>
+      <IconBubble aria-hidden="true">
         <IconComponent strokeWidth={1.75} />
       </IconBubble>
       <StepNum>שלב {step.num}</StepNum>

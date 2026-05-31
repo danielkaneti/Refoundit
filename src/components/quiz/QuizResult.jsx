@@ -5,6 +5,7 @@ import { Button } from '@components/ui';
 import { fadeInUp, checkmark } from '@styles/animations';
 import { openWhatsApp } from '@utils/whatsapp';
 
+/* role="alert" causes screen readers to announce the result as soon as it mounts */
 const Wrapper = styled.div`
   animation: ${fadeInUp} 0.5s ease;
   text-align: center;
@@ -53,8 +54,12 @@ const scrollTo = (id) =>
 export default function QuizResult({ paidTax, hasSelections, onReset }) {
   if (paidTax === 'כן' && hasSelections) {
     return (
-      <Wrapper>
-        <IconCircle $bg="linear-gradient(135deg, #00B4A0, #00D4BC)" $color="#fff">
+      <Wrapper role="alert">
+        <IconCircle
+          $bg="linear-gradient(135deg, #00B4A0, #00D4BC)"
+          $color="#fff"
+          aria-hidden="true"
+        >
           <LuSparkles strokeWidth={1.75} />
         </IconCircle>
         <Title $large>יש סיכוי גבוה שמגיע לך החזר מס!</Title>
@@ -66,7 +71,7 @@ export default function QuizResult({ paidTax, hasSelections, onReset }) {
         <ButtonRow>
           <Button size="lg" onClick={() => scrollTo('contact')}>
             השאירו פרטים
-            <LuMail strokeWidth={1.75} />
+            <LuMail aria-hidden="true" strokeWidth={1.75} />
           </Button>
           <Button
             variant="whatsapp"
@@ -74,7 +79,7 @@ export default function QuizResult({ paidTax, hasSelections, onReset }) {
             onClick={() => openWhatsApp('eligible')}
           >
             דברו איתנו בוואטסאפ
-            <FaWhatsapp />
+            <FaWhatsapp aria-hidden="true" />
           </Button>
         </ButtonRow>
       </Wrapper>
@@ -83,8 +88,12 @@ export default function QuizResult({ paidTax, hasSelections, onReset }) {
 
   if (paidTax === 'כן') {
     return (
-      <Wrapper>
-        <IconCircle $bg="linear-gradient(135deg, #F5A623, #FFD07B)" $color="#fff">
+      <Wrapper role="alert">
+        <IconCircle
+          $bg="linear-gradient(135deg, #F5A623, #FFD07B)"
+          $color="#fff"
+          aria-hidden="true"
+        >
           <LuCircleHelp strokeWidth={1.75} />
         </IconCircle>
         <Title>ייתכן שעדיין מגיע לך החזר!</Title>
@@ -102,8 +111,12 @@ export default function QuizResult({ paidTax, hasSelections, onReset }) {
   }
 
   return (
-    <Wrapper>
-      <IconCircle $bg="rgba(0, 180, 160, 0.1)" $color="#00B4A0">
+    <Wrapper role="alert">
+      <IconCircle
+        $bg="rgba(0, 180, 160, 0.1)"
+        $color="#00B4A0"
+        aria-hidden="true"
+      >
         <LuLightbulb strokeWidth={1.75} />
       </IconCircle>
       <Title>הסיכוי להחזר נמוך יותר, אבל...</Title>
@@ -116,11 +129,11 @@ export default function QuizResult({ paidTax, hasSelections, onReset }) {
       <ButtonRow>
         <Button onClick={onReset}>
           התחל מחדש
-          <LuRotateCcw strokeWidth={1.75} />
+          <LuRotateCcw aria-hidden="true" strokeWidth={1.75} />
         </Button>
         <Button variant="whatsapp" onClick={() => openWhatsApp('inquiry')}>
           שאלו אותנו בוואטסאפ
-          <FaWhatsapp />
+          <FaWhatsapp aria-hidden="true" />
         </Button>
       </ButtonRow>
     </Wrapper>

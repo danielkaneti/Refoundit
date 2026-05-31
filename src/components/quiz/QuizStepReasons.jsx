@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import styled from 'styled-components';
 import { Button } from '@components/ui';
 import CheckboxCard from './CheckboxCard';
@@ -55,20 +56,25 @@ export default function QuizStepReasons({
   onNext,
   nextLabel = 'המשך',
 }) {
+  const groupId = useId();
+
   return (
     <Wrapper>
-      <Title>{title}</Title>
+      <Title id={groupId}>{title}</Title>
       <Desc>ניתן לבחור יותר מאפשרות אחת</Desc>
-      <Grid>
-        {items.map((item) => (
-          <CheckboxCard
-            key={item.id}
-            item={item}
-            checked={selected.includes(item.id)}
-            onToggle={() => onToggle(item.id)}
-          />
-        ))}
-      </Grid>
+      {/* role="group" + aria-labelledby ties the checkboxes to the question title */}
+      <div role="group" aria-labelledby={groupId}>
+        <Grid>
+          {items.map((item) => (
+            <CheckboxCard
+              key={item.id}
+              item={item}
+              checked={selected.includes(item.id)}
+              onToggle={() => onToggle(item.id)}
+            />
+          ))}
+        </Grid>
+      </div>
       <Actions>
         <Button variant="outline" onClick={onBack}>
           חזרה

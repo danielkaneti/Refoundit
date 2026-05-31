@@ -102,8 +102,11 @@ export default function QuizSection() {
           <CardBody>
             {showStepHeader && (
               <StepHeader>
-                <StepPill>{`שלב ${step + 1} מתוך ${TOTAL_STEPS}`}</StepPill>
-                <Dots>
+                {/* role="status" announces step changes to screen readers politely */}
+                <StepPill role="status" aria-live="polite" aria-atomic="true">
+                  {`שלב ${step + 1} מתוך ${TOTAL_STEPS}`}
+                </StepPill>
+                <Dots aria-hidden="true">
                   {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
                     <Dot key={i} $active={i === step} $done={i < step} />
                   ))}

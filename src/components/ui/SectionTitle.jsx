@@ -25,12 +25,12 @@ const Subtitle = styled.p`
   line-height: 1.6;
 `;
 
-export default function SectionTitle({ children, light = false, sub }) {
+export default function SectionTitle({ children, light = false, sub, id }) {
   const [ref, isVisible] = useInView();
 
   return (
     <Wrapper ref={ref} $visible={isVisible}>
-      <Title $light={light} $hasSub={!!sub}>
+      <Title id={id} $light={light} $hasSub={!!sub}>
         {children}
       </Title>
       {sub && <Subtitle $light={light}>{sub}</Subtitle>}

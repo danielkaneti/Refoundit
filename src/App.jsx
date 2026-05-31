@@ -19,16 +19,26 @@ export default function App() {
   return (
     <>
       {!loaded && <PageLoader onDone={handleLoaderDone} />}
+
+      {/* Skip navigation — first focusable element on the page (WCAG 2.4.1) */}
+      <a href="#main-content" className="skip-nav">
+        דלג לתוכן הראשי
+      </a>
+
       <Navbar />
-      <Hero />
-      <QuizSection />
-      <Benefits />
-      <Process />
-      <Reasons />
-      <Testimonials />
-      <FAQ />
-      <ContactSection />
-      <CTA />
+
+      <main id="main-content">
+        <Hero />
+        <QuizSection />
+        <Benefits />
+        <Process />
+        <Reasons />
+        <Testimonials />
+        <FAQ />
+        <ContactSection />
+        <CTA />
+      </main>
+
       <Footer />
       <WhatsAppFAB />
     </>

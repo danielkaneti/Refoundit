@@ -51,8 +51,9 @@ export default function ContactSection() {
     return (
       <Section id="contact" $bg="#F7F9FC">
         <Container>
-          <SuccessCard>
-            <SuccessIcon>✅</SuccessIcon>
+          {/* role="alert" announces the success message as soon as it mounts */}
+          <SuccessCard role="alert">
+            <SuccessIcon aria-hidden="true">✅</SuccessIcon>
             <SuccessTitle>תודה! הפרטים נשלחו בהצלחה</SuccessTitle>
             <SuccessDesc>
               נחזור אליך בהקדם האפשרי. בינתיים, ניתן לפנות אלינו גם דרך
@@ -64,7 +65,7 @@ export default function ContactSection() {
               onClick={() => openWhatsApp()}
             >
               שלחו הודעה בוואטסאפ
-              <FaWhatsapp />
+              <FaWhatsapp aria-hidden="true" />
             </Button>
           </SuccessCard>
         </Container>

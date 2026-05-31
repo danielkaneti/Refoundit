@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import styled from 'styled-components';
 import { LuMail, LuPhone } from 'react-icons/lu';
 import { FaWhatsapp } from 'react-icons/fa';
 import { Container, Button } from '@components/ui';
 import { CONTACT, COMPANY } from '@data/config';
 import { openWhatsApp } from '@utils/whatsapp';
+import AccessibilityStatement from './AccessibilityStatement';
 
 const FooterWrapper = styled.footer`
   background: ${({ theme }) => theme.colors.navy};
@@ -56,7 +58,7 @@ const Desc = styled.p`
   line-height: 1.7;
 `;
 
-const ColTitle = styled.h5`
+const ColTitle = styled.h2`
   color: ${({ theme }) => theme.colors.white};
   font-size: 15px;
   font-weight: 700;
@@ -73,13 +75,51 @@ const FooterLink = styled.a`
   &:hover {
     color: ${({ theme }) => theme.colors.teal};
   }
+
+  &:focus-visible {
+    outline: 3px solid ${({ theme }) => theme.colors.teal};
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
 `;
 
+const ContactRow = styled.p`
+  font-size: 14px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+/* contrast fix: 0.4 → 0.6 (≈7.3:1 vs navy, passes WCAG AA) */
 const Bottom = styled.div`
   padding-top: 24px;
   text-align: center;
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.6);
+`;
+
+const A11yLink = styled.button`
+  background: none;
+  border: none;
+  color: ${({ theme }) => theme.colors.teal};
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  margin-top: 10px;
+  display: inline-block;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.tealLight};
+  }
+
+  &:focus-visible {
+    outline: 3px solid ${({ theme }) => theme.colors.teal};
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
 `;
 
 const FOOTER_LINKS = [
@@ -91,13 +131,16 @@ const FOOTER_LINKS = [
 ];
 
 export default function Footer() {
+  const [showA11y, setShowA11y] = useState(false);
+
   return (
-    <FooterWrapper>
+    <FooterWrapper aria-label="פוטר האתר">
+      {showA11y && <AccessibilityStatement onClose={() => setShowA11y(false)} />}
       <Container>
         <Grid>
           <LogoArea>
             <LogoRow>
-              <LogoMark>R</LogoMark>
+              <LogoMark aria-hidden="true">R</LogoMark>
               <LogoText>{COMPANY.name}</LogoText>
             </LogoRow>
             <Desc>
@@ -107,29 +150,26 @@ export default function Footer() {
             </Desc>
           </LogoArea>
 
-          <div>
+          <nav aria-label="ניווט מהיר">
             <ColTitle>ניווט מהיר</ColTitle>
             {FOOTER_LINKS.map((link) => (
               <FooterLink key={link.href} href={link.href}>
                 {link.label}
               </FooterLink>
             ))}
-          </div>
+          </nav>
 
           <div>
             <ColTitle>צרו קשר</ColTitle>
-            <p style={{ fontSize: 14, marginBottom: 8, display: 'flex', alignItems: 'center', gap: 8 }}>
+            <ContactRow>
               {CONTACT.email}
-              <LuMail strokeWidth={1.75} />
-            </p>
-            <p style={{ fontSize: 14, marginBottom: 8, display: 'flex', alignItems: 'center', gap: 8 }}>
-              {CONTACT.phoneDisplay}
-              <LuPhone strokeWidth={1.75} />
-            </p>
+              <LuMail aria-hidden="true" strokeWidth={1.75} />
+            </ContactRow>
+            
             <div style={{ marginTop: 16 }}>
               <Button variant="whatsapp" size="sm" onClick={() => openWhatsApp()}>
                 וואטסאפ
-                <FaWhatsapp />
+                <FaWhatsapp aria-hidden="true" />
               </Button>
             </div>
           </div>
@@ -141,6 +181,11 @@ export default function Footer() {
             * המידע באתר אינו מהווה תחליף לייעוץ מס מקצועי. בדיקת הזכאות הינה
             ראשונית ובכפוף לבדיקה מעמיקה.
           </p>
+          <div>
+            <A11yLink type="button" onClick={() => setShowA11y(true)}>
+              הצהרת נגישות
+            </A11yLink>
+          </div>
         </Bottom>
       </Container>
     </FooterWrapper>

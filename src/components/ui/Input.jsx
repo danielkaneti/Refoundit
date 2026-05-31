@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import styled, { css } from 'styled-components';
 
 const InputWrapper = styled.div`
@@ -10,6 +11,11 @@ const Label = styled.label`
   font-weight: 600;
   margin-bottom: 6px;
   color: ${({ theme }) => theme.colors.navy};
+`;
+
+const RequiredMark = styled.span`
+  color: ${({ theme }) => theme.colors.danger};
+  margin-inline-start: 2px;
 `;
 
 const baseInputStyles = css`
@@ -26,6 +32,13 @@ const baseInputStyles = css`
   font-family: ${({ theme }) => theme.fonts.body};
 
   &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.teal};
+  }
+
+  &:focus-visible {
+    outline: 3px solid ${({ theme }) => theme.colors.teal};
+    outline-offset: 2px;
     border-color: ${({ theme }) => theme.colors.teal};
   }
 
@@ -58,19 +71,41 @@ export default function Input({
   dir,
   noMargin = false,
   required = false,
+  id: idProp,
   ...props
 }) {
+  const generatedId = useId();
+  const id = idProp || generatedId;
+  const errorId = `${id}-error`;
   const Component = textarea ? StyledTextarea : StyledInput;
 
   return (
     <InputWrapper $noMargin={noMargin}>
       {label && (
-        <Label>
-          {label} {required && '*'}
+        <Label htmlFor={id}>
+          {label}
+          {required && (
+            <>
+              <RequiredMark aria-hidden="true"> *</RequiredMark>
+              <span className="sr-only"> (שדה חובה)</span>
+            </>
+          )}
         </Label>
       )}
-      <Component $hasError={!!error} $dir={dir} {...props} />
-      {error && <ErrorText>{error}</ErrorText>}
+      <Component
+        id={id}
+        $hasError={!!error}
+        $dir={dir}
+        aria-required={required || undefined}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={error ? errorId : undefined}
+        {...props}
+      />
+      {error && (
+        <ErrorText id={errorId} role="alert">
+          {error}
+        </ErrorText>
+      )}
     </InputWrapper>
   );
 }

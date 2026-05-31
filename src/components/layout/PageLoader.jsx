@@ -107,12 +107,12 @@ export default function PageLoader({ onDone }) {
   }, [onDone]);
 
   return (
-    <Overlay $leaving={leaving}>
-      <LogoWrap>
+    <Overlay $leaving={leaving} role="status" aria-label="REFOUNDIT טוען...">
+      <LogoWrap aria-hidden="true">
         <LogoMark>R</LogoMark>
         <LogoText>REFOUNDIT</LogoText>
       </LogoWrap>
-      <Dots>
+      <Dots aria-hidden="true">
         {[0, 1, 2].map((i) => (
           <Dot key={i} $i={i} />
         ))}

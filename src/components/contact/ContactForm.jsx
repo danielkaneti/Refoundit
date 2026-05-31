@@ -4,7 +4,8 @@ import { Button, Input } from '@components/ui';
 import { CONTACT } from '@data/config';
 import { validateContactForm } from '@utils/validation';
 
-const Form = styled.div`
+/* Changed from styled.div to styled.form for semantic form landmark (WCAG 1.3.1) */
+const Form = styled.form`
   background: ${({ theme }) => theme.colors.white};
   padding: clamp(24px, 4vw, 40px);
   border-radius: ${({ theme }) => theme.radii.lg};
@@ -33,20 +34,20 @@ export default function ContactForm({ onSuccess }) {
 
   const updateField = (field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
-    // Clear error on change
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
     const validationErrors = validateContactForm(form);
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
 
-    // Build mailto link
     const subject = 'פנייה חדשה מאתר REFOUNDIT';
     const body = `שם: ${form.firstName} ${form.lastName}\nטלפון: ${form.phone}\nמייל: ${form.email}\nהודעה: ${form.message}`;
 
@@ -59,7 +60,7 @@ export default function ContactForm({ onSuccess }) {
   };
 
   return (
-    <Form>
+    <Form onSubmit={handleSubmit} noValidate aria-label="טופס יצירת קשר">
       <Row>
         <Input
           label="שם פרטי"
@@ -81,16 +82,6 @@ export default function ContactForm({ onSuccess }) {
         />
       </Row>
 
-      <Input
-        label="טלפון"
-        required
-        type="tel"
-        dir="ltr"
-        placeholder="050-1234567"
-        value={form.phone}
-        error={errors.phone}
-        onChange={(e) => updateField('phone', e.target.value)}
-      />
 
       <Input
         label="אימייל (אופציונלי)"
@@ -110,12 +101,13 @@ export default function ContactForm({ onSuccess }) {
       />
 
       <Button
+        type="submit"
         fullWidth
         size="lg"
         style={{ marginTop: 24 }}
-        onClick={handleSubmit}
       >
-        📨 שלח פרטים
+        {/* Emoji aria-hidden — text label is sufficient for AT */}
+        <span aria-hidden="true">📨</span> שלח פרטים
       </Button>
     </Form>
   );

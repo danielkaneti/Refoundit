@@ -73,7 +73,7 @@ function BenefitCard({ benefit, delay }) {
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
     >
-      <Icon $hovered={hov}>
+      <Icon $hovered={hov} aria-hidden="true">
         <IconComponent strokeWidth={1.75} />
       </Icon>
       <CardTitle $hovered={hov}>{benefit.title}</CardTitle>

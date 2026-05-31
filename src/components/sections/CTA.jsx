@@ -47,7 +47,7 @@ export default function CTA() {
           <ButtonRow>
             <Button variant="secondary" size="lg" onClick={() => scrollTo('quiz')}>
               בדקו זכאות עכשיו
-              <LuRocket strokeWidth={1.75} />
+              <LuRocket aria-hidden="true" strokeWidth={1.75} />
             </Button>
             <Button
               size="lg"
@@ -55,7 +55,7 @@ export default function CTA() {
               onClick={() => openWhatsApp('inquiry')}
             >
               וואטסאפ
-              <FaWhatsapp />
+              <FaWhatsapp aria-hidden="true" />
             </Button>
           </ButtonRow>
         </Inner>

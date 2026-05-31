@@ -93,6 +93,15 @@ const StyledButton = styled.button`
   }
 
   ${({ $fullWidth }) => $fullWidth && css`width: 100%;`}
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: 3px solid white;
+    outline-offset: 3px;
+  }
 `;
 
 export default function Button({
@@ -100,10 +109,11 @@ export default function Button({
   variant = 'primary',
   size = 'md',
   fullWidth = false,
+  type = 'button',
   ...props
 }) {
   return (
-    <StyledButton $variant={variant} $size={size} $fullWidth={fullWidth} {...props}>
+    <StyledButton $variant={variant} $size={size} $fullWidth={fullWidth} type={type} {...props}>
       {children}
     </StyledButton>
   );
