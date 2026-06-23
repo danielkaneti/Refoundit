@@ -26,7 +26,6 @@ export default function ContactForm({ onSuccess }) {
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
-    phone: '',
     email: '',
     message: '',
   });

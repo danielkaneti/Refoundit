@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://refound-it.com/sitemap.xml

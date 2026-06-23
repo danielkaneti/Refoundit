@@ -3,7 +3,7 @@ import { LuMail, LuPhone } from 'react-icons/lu';
 import { FaWhatsapp } from 'react-icons/fa';
 import { Button } from '@components/ui';
 import { CONTACT } from '@data/config';
-import { openWhatsApp, callPhone } from '@utils/whatsapp';
+import { openWhatsApp } from '@utils/whatsapp';
 
 const Stack = styled.div`
   display: flex;

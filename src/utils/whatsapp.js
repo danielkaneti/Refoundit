@@ -15,12 +15,7 @@ export function openWhatsAppCustom(message) {
   window.open(getWhatsAppUrl(message), '_blank');
 }
 
-/**
- * Opens phone dialer.
- */
-export function callPhone() {
-  window.open(`tel:${CONTACT.phone}`);
-}
+
 
 /**
  * Opens mailto with subject and body.
