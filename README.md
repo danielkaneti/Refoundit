@@ -119,6 +119,11 @@ Edit `src/data/config.js` to update:
 - Email address
 - Company info
 
+## ✍️ Document signing
+
+`/admin` (owner-only portal) prepares a power-of-attorney PDF for a client and creates a private `/sign/<token>` link. The signed PDF is emailed to the office.
+Runs on Cloudflare Pages Functions (`functions/`, `server/`) + R2 + Resend. Setup: [docs/document-signing-setup.md](docs/document-signing-setup.md).
+
 ## 📄 License
 
 MIT © REFOUNDIT

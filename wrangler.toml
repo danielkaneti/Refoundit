@@ -1,0 +1,16 @@
+# Cloudflare Pages config — bindings for the document-signing Functions.
+# Secrets are NOT stored here. Set them in the Pages dashboard
+# (Settings → Variables and Secrets) or locally in .dev.vars:
+#   ADMIN_PASSWORD, SESSION_SECRET, RESEND_API_KEY
+name = "refoundit"
+pages_build_output_dir = "./dist"
+compatibility_date = "2025-09-01"
+
+[vars]
+NOTIFY_EMAIL = "matanelkabs@gmail.com"
+MAIL_FROM = "REFOUNDIT <documents@refound-it.com>"
+SIGN_LINK_TTL_DAYS = "30"
+
+[[r2_buckets]]
+binding = "DOCS_BUCKET"
+bucket_name = "refoundit-docs"

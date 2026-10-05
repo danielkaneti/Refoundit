@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /sign/
+Disallow: /api/
 
 Sitemap: https://refound-it.com/sitemap.xml
