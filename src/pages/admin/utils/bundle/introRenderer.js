@@ -59,7 +59,7 @@ function subjectLines({ caseNumber, taxYear }, title) {
 /**
  * @returns {Array<Array<object>>} pages of draw operations
  */
-export function layoutIntro({ office, packageData, title, entries, hasSignature }) {
+export function layoutIntro({ office, packageData, title, entries, hasSignature, hasLogo = true }) {
   const pages = [[]];
   let ops = pages[0];
   let y = MARGIN;
@@ -79,16 +79,26 @@ export function layoutIntro({ office, packageData, title, entries, hasSignature 
   const text = (value, x, top, size, { weight = 400, color = INK, align = 'right' } = {}) =>
     ops.push({ type: 'text', value, x, y: top, size, weight, color, align });
 
-  // ── Header: brand on the left, recipient block on the right ──
-  ops.push({ type: 'monogram', x: MARGIN, y: y - 4, size: 64, color: MONOGRAM_COLOR });
-  text(office.officeName, MARGIN + 78, y + 22, 22, { weight: 700, color: MONOGRAM_COLOR, align: 'left' });
-  if (office.tagline) text(office.tagline, MARGIN + 78, y + 46, 13, { color: MUTED, align: 'left' });
+  // ── Header: logo on the left; date, then the recipient block on the right ──
+  const LOGO_BOX = { w: 190, h: 130 };
+  if (hasLogo) {
+    ops.push({ type: 'logo', x: MARGIN, y: y - 10, ...LOGO_BOX });
+  } else {
+    ops.push({ type: 'monogram', x: MARGIN, y: y - 4, size: 64, color: MONOGRAM_COLOR });
+    text(office.officeName, MARGIN + 78, y + 22, 22, { weight: 700, color: MONOGRAM_COLOR, align: 'left' });
+    if (office.tagline) text(office.tagline, MARGIN + 78, y + 46, 13, { color: MUTED, align: 'left' });
+  }
 
-  const recipient = ['לכבוד', 'פקיד שומה', packageData.clientName, packageData.docDateText].filter(Boolean);
-  recipient.forEach((line, i) =>
-    text(line, right, y + 14 + i * 22, 15, { weight: i === 1 ? 700 : 400 })
-  );
-  y += Math.max(80, recipient.length * 22 + 14);
+  let recipientY = y + 14;
+  if (packageData.docDateText) {
+    text(packageData.docDateText, right, recipientY, 15);
+    recipientY += 36;
+  }
+  ['לכבוד', 'פקיד השומה', 'א.ג.נ.'].forEach((line, i) => {
+    text(line, right, recipientY, 15, { weight: i === 1 ? 700 : 400 });
+    recipientY += 22;
+  });
+  y = Math.max(y + LOGO_BOX.h, recipientY) + 6;
 
   ops.push({ type: 'line', x1: MARGIN, y1: y, x2: right, y2: y, color: primary, width: 2 });
   y += 44;
@@ -227,8 +237,39 @@ function newCanvas({ width, height }) {
   return { canvas, ctx };
 }
 
-/** Draws laid-out pages. `signatureImage` is an HTMLImageElement or null. */
-export function paintPages(pages, { signatureImage = null } = {}) {
+/** Crops the white margins around an image (e.g. a logo exported with padding). */
+export function trimWhitespace(image, threshold = 235) {
+  const canvas = document.createElement('canvas');
+  canvas.width = image.naturalWidth || image.width;
+  canvas.height = image.naturalHeight || image.height;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(image, 0, 0);
+  const { data, width, height } = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  let minX = width;
+  let minY = height;
+  let maxX = -1;
+  let maxY = -1;
+  for (let y = 0; y < height; y += 1) {
+    for (let x = 0; x < width; x += 1) {
+      const i = (y * width + x) * 4;
+      if (data[i + 3] > 20 && (data[i] < threshold || data[i + 1] < threshold || data[i + 2] < threshold)) {
+        if (x < minX) minX = x;
+        if (x > maxX) maxX = x;
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+      }
+    }
+  }
+  if (maxX < 0) return canvas;
+  const out = document.createElement('canvas');
+  out.width = maxX - minX + 1;
+  out.height = maxY - minY + 1;
+  out.getContext('2d').drawImage(canvas, minX, minY, out.width, out.height, 0, 0, out.width, out.height);
+  return out;
+}
+
+/** Draws laid-out pages. Images are HTMLImageElement / canvas, or null. */
+export function paintPages(pages, { signatureImage = null, logoImage = null } = {}) {
   return pages.map((ops) => {
     const { canvas, ctx } = newCanvas(A4_PX);
     for (const op of ops) {
@@ -260,6 +301,8 @@ export function paintPages(pages, { signatureImage = null } = {}) {
         drawMonogram(ctx, op);
       } else if (op.type === 'signature' && signatureImage) {
         drawImageContained(ctx, signatureImage, op);
+      } else if (op.type === 'logo' && logoImage) {
+        drawImageContained(ctx, logoImage, op);
       }
     }
     return canvas;
