@@ -18,6 +18,7 @@ export const keys = {
   docSigned: (token) => `docs/${token}/signed.pdf`,
   docPrefix: (token) => `docs/${token}/`,
   ownerSignature: 'settings/owner-signature.png',
+  officeSettings: 'settings/office.json',
 };
 
 const PDF_META = { httpMetadata: { contentType: 'application/pdf' } };

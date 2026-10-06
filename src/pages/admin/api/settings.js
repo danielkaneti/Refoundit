@@ -34,3 +34,34 @@ export function useDeleteOwnerSignature() {
     onSuccess: () => queryClient.setQueryData(ownerSignatureKey, null),
   });
 }
+
+const officeSettingsKey = ['admin', 'settings', 'office'];
+
+/** Defaults for the bundle cover letter until the office details are saved. */
+export const OFFICE_DEFAULTS = {
+  officeName: 'מתן אלקבץ',
+  contactName: 'מתן אלקבץ',
+  contactTitle: 'רו"ח',
+  tagline: 'רואה חשבון בגישה חדשנית',
+  phone: '050-993-6301',
+  email: 'info@refoundit.co.il',
+  address: '',
+  bodyText: 'מצ"ב חבילת המסמכים המוגשת לצורך בדיקת והגשת הדוח השנתי.',
+  closingText: 'בכבוד רב,',
+  primaryColor: '#1e3a5f',
+};
+
+export const useOfficeSettings = () =>
+  useQuery({
+    queryKey: officeSettingsKey,
+    queryFn: async () => ({ ...OFFICE_DEFAULTS, ...(await adminRequest('admin/settings/office')) }),
+    staleTime: Infinity,
+  });
+
+export function useSaveOfficeSettings() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (settings) => adminRequest('admin/settings/office', { method: 'PUT', json: settings }),
+    onSuccess: (data) => queryClient.setQueryData(officeSettingsKey, { ...OFFICE_DEFAULTS, ...data }),
+  });
+}

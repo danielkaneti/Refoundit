@@ -6,6 +6,7 @@ import SignaturePad from '@components/signature/SignaturePad';
 import useObjectUrl from '@hooks/useObjectUrl';
 import { useDeleteOwnerSignature, useOwnerSignature, useSaveOwnerSignature } from '../api/settings';
 import { imageFileToSignaturePng } from '../utils/signatureImage';
+import OfficeSettingsForm from './OfficeSettingsForm';
 import { Card, ErrorText, FieldLabel, Heading, IconButton, Muted, Row, SubHeading } from './styles';
 
 const Preview = styled.div`
@@ -124,6 +125,7 @@ export default function SettingsView() {
         {(fileError || save.error) && <ErrorText role="alert">{fileError || save.error.message}</ErrorText>}
         {save.isSuccess && <Muted role="status">החתימה נשמרה ✓</Muted>}
       </Card>
+      <OfficeSettingsForm />
     </>
   );
 }

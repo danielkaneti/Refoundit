@@ -9,11 +9,12 @@ import NewDocView from './components/NewDocView';
 import TemplateEditor from './components/TemplateEditor';
 import TemplatesView from './components/TemplatesView';
 import SettingsView from './components/SettingsView';
+import BundleBuilder from './components/bundle/BundleBuilder';
 import { Muted } from './components/styles';
 
 /**
  * Single-user admin portal at /admin.
- * view: 'docs' | 'newDoc' | 'templates' | 'editTemplate' | 'settings'
+ * view: 'docs' | 'newDoc' | 'bundle' | 'templates' | 'editTemplate' | 'settings'
  */
 export default function AdminApp() {
   const queryClient = useQueryClient();
@@ -46,6 +47,7 @@ export default function AdminApp() {
       {view.name === 'templates' && <TemplatesView onEdit={editTemplate} />}
       {view.name === 'editTemplate' && <TemplateEditor templateId={view.templateId} onBack={showTemplates} />}
       {view.name === 'settings' && <SettingsView />}
+      {view.name === 'bundle' && <BundleBuilder />}
     </AdminShell>
   );
 }
