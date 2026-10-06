@@ -74,6 +74,7 @@ const LogoutButton = styled.button`
 
 export const ADMIN_TABS = [
   { id: 'docs', label: 'מסמכים' },
+  { id: 'bundle', label: 'חבילת מסמכים' },
   { id: 'templates', label: 'תבניות' },
   { id: 'settings', label: 'הגדרות' },
 ];

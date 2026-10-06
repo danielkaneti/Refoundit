@@ -1,5 +1,0 @@
-# Copy to .dev.vars for local `npm run dev:api` (.dev.vars is git-ignored).
-# Fill in your own values — never commit real secrets.
-ADMIN_PASSWORD=
-SESSION_SECRET=
-RESEND_API_KEY=
