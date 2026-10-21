@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { Button, Input } from '@components/ui';
-import { CONTACT } from '@data/config';
+import { openWhatsAppCustom } from '@utils/whatsapp';
 import { validateContactForm } from '@utils/validation';
 
 /* Changed from styled.div to styled.form for semantic form landmark (WCAG 1.3.1) */
@@ -26,7 +26,6 @@ export default function ContactForm({ onSuccess }) {
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
-    email: '',
     message: '',
   });
   const [errors, setErrors] = useState({});
@@ -47,14 +46,8 @@ export default function ContactForm({ onSuccess }) {
       return;
     }
 
-    const subject = 'פנייה חדשה מאתר REFOUNDIT';
-    const body = `שם: ${form.firstName} ${form.lastName}\nטלפון: ${form.phone}\nמייל: ${form.email}\nהודעה: ${form.message}`;
-
-    window.open(
-      `mailto:${CONTACT.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`,
-      '_blank'
-    );
-
+    const message = `שלום, פנייה חדשה מאתר REFOUNDIT\nשם: ${form.firstName} ${form.lastName}\nהודעה: ${form.message || 'אשמח לקבל פרטים נוספים'}`;
+    openWhatsAppCustom(message);
     onSuccess?.();
   };
 
@@ -81,16 +74,6 @@ export default function ContactForm({ onSuccess }) {
         />
       </Row>
 
-
-      <Input
-        label="אימייל (אופציונלי)"
-        type="email"
-        dir="ltr"
-        placeholder="your@email.com"
-        value={form.email}
-        onChange={(e) => updateField('email', e.target.value)}
-      />
-
       <Input
         label="הודעה (אופציונלי)"
         textarea
@@ -105,8 +88,7 @@ export default function ContactForm({ onSuccess }) {
         size="lg"
         style={{ marginTop: 24 }}
       >
-        {/* Emoji aria-hidden — text label is sufficient for AT */}
-        <span aria-hidden="true">📨</span> שלח פרטים
+        <span aria-hidden="true">📨</span> המשך לוואטסאפ
       </Button>
     </Form>
   );

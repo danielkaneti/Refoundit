@@ -4,11 +4,12 @@ import useScrollPosition from '@hooks/useScrollPosition';
 import { Button, Container } from '@components/ui';
 
 const NAV_LINKS = [
-  { label: 'בדיקת זכאות', href: '#quiz' },
-  { label: 'איך זה עובד', href: '#process' },
-  { label: 'למה אנחנו', href: '#benefits' },
-  { label: 'שאלות נפוצות', href: '#faq' },
-  { label: 'צור קשר', href: '#contact' },
+  { label: 'בדיקת זכאות', href: '/#quiz' },
+  { label: 'איך זה עובד', href: '/#process' },
+  { label: 'למה אנחנו', href: '/#benefits' },
+  { label: 'שאלות נפוצות', href: '/#faq' },
+  { label: 'צור קשר', href: '/#contact' },
+  { label: 'מדריכים', href: '/blog/' },
 ];
 
 const Nav = styled.nav`
@@ -162,20 +163,16 @@ const MobileLink = styled.a`
   }
 `;
 
-const scrollTo = (id) => {
-  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-};
-
-export default function Navbar() {
+export default function Navbar({ solid = false }) {
   const scrollY = useScrollPosition();
   const [menuOpen, setMenuOpen] = useState(false);
-  const scrolled = scrollY > 50;
+  const scrolled = solid || scrollY > 50;
 
   return (
     <Nav $scrolled={scrolled} aria-label="ניווט ראשי">
       <Container>
         <NavInner>
-          <LogoLink href="#" aria-label="REFOUNDIT - חזרה לראש הדף">
+          <LogoLink href="/" aria-label="REFOUNDIT - חזרה לדף הבית">
             <LogoMark aria-hidden="true">R</LogoMark>
             <LogoText>REFOUNDIT</LogoText>
           </LogoLink>
@@ -186,7 +183,7 @@ export default function Navbar() {
                 {link.label}
               </NavLink>
             ))}
-            <Button size="sm" onClick={() => scrollTo('quiz')}>
+            <Button as="a" id="nav-eligibility" aria-label="בדיקת זכאות להחזר מס" size="sm" href="/#quiz">
               בדקו עכשיו
             </Button>
           </DesktopNav>

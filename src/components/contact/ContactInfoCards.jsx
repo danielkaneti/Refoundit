@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { LuMail, LuPhone } from 'react-icons/lu';
 import { FaWhatsapp } from 'react-icons/fa';
 import { Button } from '@components/ui';
 import { CONTACT } from '@data/config';
@@ -61,19 +60,11 @@ const CARDS = [
   {
     icon: FaWhatsapp,
     title: 'וואטסאפ',
-    desc: 'שלחו הודעה ונחזור מיד',
+    desc: CONTACT.whatsappDisplay,
     action: () => openWhatsApp('contact'),
     btnText: 'שלחו הודעה',
     btnVariant: 'whatsapp',
   },
-  {
-    icon: LuMail,
-    title: 'אימייל',
-    desc: CONTACT.email,
-    action: () => window.open(`mailto:${CONTACT.email}`, '_blank'),
-    btnText: 'שלחו מייל',
-    btnVariant: 'outline',
-  }
 ];
 
 export default function ContactInfoCards() {

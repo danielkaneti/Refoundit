@@ -214,9 +214,9 @@ export default function AccessibilityStatement({ onClose }) {
           נתקלתם בבעיית נגישות או זקוקים לסיוע? נשמח לעזור.
         </P>
         <P>
-          דוא"ל:{' '}
-          <ContactLink href={`mailto:${CONTACT.email}?subject=פנייה בנושא נגישות`}>
-            {CONTACT.email}
+          טלפון:{' '}
+          <ContactLink href={`tel:${CONTACT.phone}`}>
+            {CONTACT.phoneDisplay}
           </ContactLink>
         </P>
      

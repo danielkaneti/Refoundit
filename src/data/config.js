@@ -10,11 +10,10 @@ export const COMPANY = {
 };
 
 export const CONTACT = {
-  whatsappNumber: '972509936301',
-  whatsappDisplay: '050-993-6301',
-  email: 'info@refoundit.co.il',
-  phone: '0509936301',
-  phoneDisplay: '050-993-6301',
+  whatsappNumber: '972554671450',
+  whatsappDisplay: '055-467-1450',
+  phone: '0554671450',
+  phoneDisplay: '055-467-1450',
 };
 
 export const WHATSAPP_MESSAGES = {
@@ -26,6 +25,3 @@ export const WHATSAPP_MESSAGES = {
 
 export const getWhatsAppUrl = (message = WHATSAPP_MESSAGES.general) =>
   `https://wa.me/${CONTACT.whatsappNumber}?text=${encodeURIComponent(message)}`;
-
-export const getMailtoUrl = (subject, body) =>
-  `mailto:${CONTACT.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;

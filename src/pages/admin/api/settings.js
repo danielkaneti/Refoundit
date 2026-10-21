@@ -43,7 +43,7 @@ export const OFFICE_DEFAULTS = {
   contactName: 'מתן אלקבץ',
   contactTitle: 'רו"ח',
   tagline: 'רואה חשבון בגישה חדשנית',
-  phone: '050-993-6301',
+  phone: '055-467-1450',
   email: 'info@refoundit.co.il',
   address: '',
   bodyText: 'מצ"ב חבילת המסמכים המוגשת לצורך בדיקת והגשת הדוח השנתי.',

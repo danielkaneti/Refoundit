@@ -14,13 +14,3 @@ export function openWhatsApp(messageKey = 'general') {
 export function openWhatsAppCustom(message) {
   window.open(getWhatsAppUrl(message), '_blank');
 }
-
-
-
-/**
- * Opens mailto with subject and body.
- */
-export function sendEmail(subject, body) {
-  const mailto = `mailto:${CONTACT.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  window.open(mailto, '_blank');
-}
