@@ -56,8 +56,7 @@ export default function ContactSection() {
             <SuccessIcon aria-hidden="true">✅</SuccessIcon>
             <SuccessTitle>תודה! הפרטים נשלחו בהצלחה</SuccessTitle>
             <SuccessDesc>
-              נחזור אליך בהקדם האפשרי. בינתיים, ניתן לפנות אלינו גם דרך
-              וואטסאפ.
+              נפתח חלון וואטסאפ עם הפרטים שלך. שלחו את ההודעה כדי שנוכל לחזור אליכם.
             </SuccessDesc>
             <Button
               variant="whatsapp"

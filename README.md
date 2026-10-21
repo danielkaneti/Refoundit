@@ -124,6 +124,12 @@ Edit `src/data/config.js` to update:
 `/admin` (owner-only portal) prepares a power-of-attorney PDF for a client and creates a private `/sign/<token>` link. The signed PDF is emailed to the office.
 Runs on Cloudflare Pages Functions (`functions/`, `server/`) + R2 + Resend. Setup: [docs/document-signing-setup.md](docs/document-signing-setup.md).
 
+## Blog And SEO
+
+The public `/blog/` hub and published articles are statically rendered during `npm run build`, with per-page metadata, structured data, and an automatically generated sitemap. The existing eligibility flow stays at `/#quiz`.
+
+See [the publishing guide](docs/seo/blog.md) for adding articles and validating Cloudflare routes. Run `npm run test:blog` after building to check generated HTML and SEO output.
+
 ## 📄 License
 
 MIT © REFOUNDIT

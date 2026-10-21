@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { LuMail, LuPhone } from 'react-icons/lu';
+import { LuPhone } from 'react-icons/lu';
 import { FaWhatsapp } from 'react-icons/fa';
 import { Container, Button } from '@components/ui';
 import { CONTACT, COMPANY } from '@data/config';
@@ -89,6 +89,11 @@ const ContactRow = styled.p`
   display: flex;
   align-items: center;
   gap: 8px;
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 `;
 
 /* contrast fix: 0.4 → 0.6 (≈7.3:1 vs navy, passes WCAG AA) */
@@ -123,11 +128,12 @@ const A11yLink = styled.button`
 `;
 
 const FOOTER_LINKS = [
-  { label: 'בדיקת זכאות', href: '#quiz' },
-  { label: 'איך זה עובד', href: '#process' },
-  { label: 'למה אנחנו', href: '#benefits' },
-  { label: 'שאלות נפוצות', href: '#faq' },
-  { label: 'צור קשר', href: '#contact' },
+  { label: 'בדיקת זכאות', href: '/#quiz' },
+  { label: 'איך זה עובד', href: '/#process' },
+  { label: 'למה אנחנו', href: '/#benefits' },
+  { label: 'שאלות נפוצות', href: '/#faq' },
+  { label: 'צור קשר', href: '/#contact' },
+  { label: 'מדריכים להחזרי מס', href: '/blog/' },
 ];
 
 export default function Footer() {
@@ -162,8 +168,8 @@ export default function Footer() {
           <div>
             <ColTitle>צרו קשר</ColTitle>
             <ContactRow>
-              {CONTACT.email}
-              <LuMail aria-hidden="true" strokeWidth={1.75} />
+              <LuPhone aria-hidden="true" strokeWidth={1.75} />
+              <a href={`tel:${CONTACT.phone}`} dir="ltr">{CONTACT.phoneDisplay}</a>
             </ContactRow>
             
             <div style={{ marginTop: 16 }}>

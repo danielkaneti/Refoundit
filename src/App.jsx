@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Navbar, Footer, WhatsAppFAB, PageLoader } from '@components/layout';
 import {
   Hero,
@@ -15,6 +15,17 @@ import ContactSection from '@components/contact/ContactSection';
 export default function App() {
   const [loaded, setLoaded] = useState(false);
   const handleLoaderDone = useCallback(() => setLoaded(true), []);
+
+  useEffect(() => {
+    if (!loaded || window.location.hash !== '#quiz') return;
+    const quiz = document.getElementById('quiz');
+    if (!quiz) return;
+    const navigationHeight = document.querySelector('nav')?.offsetHeight || 0;
+    window.scrollTo({
+      top: Math.max(0, quiz.getBoundingClientRect().top + window.scrollY - navigationHeight),
+      behavior: 'instant',
+    });
+  }, [loaded]);
 
   return (
     <>
