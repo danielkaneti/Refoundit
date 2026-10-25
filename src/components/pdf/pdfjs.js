@@ -6,10 +6,15 @@ pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
 
 // Served from public/pdfjs (copied by scripts/copy-pdfjs-assets.mjs). Needed when a PDF's
 // embedded fonts can't be loaded by the browser — otherwise Hebrew glyphs come out broken.
+//
+// disableFontFace: glyphs are drawn as paths straight from the PDF's font data instead of
+// being registered with the browser (FontFace). Some browsers/extensions/security policies
+// block or sanitize those fonts, which made Hebrew letters (e.g. ו, י) disappear.
 const PDF_OPTIONS = {
   cMapUrl: '/pdfjs/cmaps/',
   cMapPacked: true,
   standardFontDataUrl: '/pdfjs/standard_fonts/',
+  disableFontFace: true,
   isEvalSupported: false,
 };
 
