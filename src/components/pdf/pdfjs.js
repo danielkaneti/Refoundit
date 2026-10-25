@@ -4,8 +4,17 @@ import workerUrl from 'pdfjs-dist/legacy/build/pdf.worker.min.mjs?url';
 
 pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
 
+// Served from public/pdfjs (copied by scripts/copy-pdfjs-assets.mjs). Needed when a PDF's
+// embedded fonts can't be loaded by the browser — otherwise Hebrew glyphs come out broken.
+const PDF_OPTIONS = {
+  cMapUrl: '/pdfjs/cmaps/',
+  cMapPacked: true,
+  standardFontDataUrl: '/pdfjs/standard_fonts/',
+  isEvalSupported: false,
+};
+
 // pdf.js transfers (detaches) the buffer to its worker, so always hand it a copy.
-export const loadPdfDocument = (bytes) => pdfjs.getDocument({ data: bytes.slice() }).promise;
+export const loadPdfDocument = (bytes) => pdfjs.getDocument({ ...PDF_OPTIONS, data: bytes.slice() }).promise;
 
 export async function getPageCount(bytes) {
   const doc = await loadPdfDocument(bytes);
