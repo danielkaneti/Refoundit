@@ -16,9 +16,8 @@ export function signedFilename(meta) {
 }
 
 export async function sendSignedPdfEmail(env, meta, pdfBytes) {
-  if (!env.RESEND_API_KEY || !env.MAIL_FROM || !env.NOTIFY_EMAIL) {
-    throw new Error('Email is not configured');
-  }
+  const missing = ['RESEND_API_KEY', 'MAIL_FROM', 'NOTIFY_EMAIL'].filter((name) => !env[name]);
+  if (missing.length) throw new Error(`חסרה הגדרה בשרת: ${missing.join(', ')}`);
 
   const signedAt = new Date(meta.signedAt).toLocaleString('he-IL', { timeZone: 'Asia/Jerusalem' });
   const html = `
@@ -45,5 +44,15 @@ export async function sendSignedPdfEmail(env, meta, pdfBytes) {
     }),
   });
 
-  if (!response.ok) throw new Error(`Resend responded ${response.status}`);
+  if (!response.ok) throw new Error(`Resend ${response.status}: ${await resendErrorMessage(response)}`);
+}
+
+/** Resend's own explanation (e.g. "domain is not verified") — contains no document data. */
+async function resendErrorMessage(response) {
+  try {
+    const body = await response.json();
+    return String(body.message || body.name || 'unknown error').slice(0, 300);
+  } catch {
+    return 'unknown error';
+  }
 }
