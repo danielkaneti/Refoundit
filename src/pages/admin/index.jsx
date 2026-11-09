@@ -10,11 +10,12 @@ import TemplateEditor from './components/TemplateEditor';
 import TemplatesView from './components/TemplatesView';
 import SettingsView from './components/SettingsView';
 import BundleBuilder from './components/bundle/BundleBuilder';
+import TaxCalculatorView from './components/tax/TaxCalculatorView';
 import { Muted } from './components/styles';
 
 /**
  * Single-user admin portal at /admin.
- * view: 'docs' | 'newDoc' | 'bundle' | 'templates' | 'editTemplate' | 'settings'
+ * view: 'docs' | 'newDoc' | 'bundle' | 'templates' | 'editTemplate' | 'settings' | 'taxCalculator'
  */
 export default function AdminApp() {
   const queryClient = useQueryClient();
@@ -48,6 +49,7 @@ export default function AdminApp() {
       {view.name === 'editTemplate' && <TemplateEditor templateId={view.templateId} onBack={showTemplates} />}
       {view.name === 'settings' && <SettingsView />}
       {view.name === 'bundle' && <BundleBuilder />}
+      {view.name === 'taxCalculator' && <TaxCalculatorView />}
     </AdminShell>
   );
 }
