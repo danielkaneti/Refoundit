@@ -117,6 +117,12 @@ export default function DocsView({ onNew }) {
                         <Badge $tone={status.tone}>{status.label}</Badge>
                         {doc.status === 'signed' && <Muted as="span">{formatDate(doc.signedAt)}</Muted>}
                         {doc.emailFailed && <Badge $tone="warning">המייל לא נשלח</Badge>}
+                        {doc.emailFailed && doc.emailError && (
+                          <Muted as="span" style={{ color: '#E74C3C', fontSize: 12 }}>
+                            {doc.emailError}
+                          </Muted>
+                        )}
+                        {doc.emailSentAt && !doc.emailFailed && <Muted as="span">נשלח למייל ✓</Muted>}
                       </Row>
                     </td>
                     <td>

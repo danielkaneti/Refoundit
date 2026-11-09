@@ -40,6 +40,8 @@ function readCookie(request, name) {
 }
 
 export async function verifySession(request, env) {
+  const hostname = new URL(request.url).hostname;
+  if (env.ADMIN_AUTH_DISABLED === 'true' && ['localhost', '127.0.0.1', '[::1]'].includes(hostname)) return true;
   if (!isAuthConfigured(env)) return false;
   const value = readCookie(request, COOKIE_NAME);
   if (!value) return false;

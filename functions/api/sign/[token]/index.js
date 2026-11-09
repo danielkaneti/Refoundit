@@ -62,11 +62,11 @@ export async function onRequestPost({ request, env, params }) {
 
   try {
     await sendSignedPdfEmail(env, meta, signedBytes);
-    meta = { ...meta, emailSentAt: new Date().toISOString(), emailFailed: false };
+    meta = { ...meta, emailSentAt: new Date().toISOString(), emailFailed: false, emailError: null };
   } catch (err) {
     // The document is signed and stored either way; it can be re-sent from the admin portal.
     console.error('Signed PDF email failed:', err.message);
-    meta = { ...meta, emailFailed: true };
+    meta = { ...meta, emailFailed: true, emailError: err.message };
   }
   await putJson(env.DOCS_BUCKET, keys.docMeta(token), meta);
 

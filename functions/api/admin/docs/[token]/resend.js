@@ -15,10 +15,11 @@ export async function onRequestPost({ env, params }) {
     await sendSignedPdfEmail(env, doc.data, bytes);
   } catch (err) {
     console.error('Signed PDF email failed:', err.message);
-    return error('שליחת המייל נכשלה', 502);
+    await putJson(env.DOCS_BUCKET, keys.docMeta(params.token), { ...doc.data, emailFailed: true, emailError: err.message });
+    return error(`שליחת המייל נכשלה: ${err.message}`, 502);
   }
 
-  const meta = { ...doc.data, emailSentAt: new Date().toISOString(), emailFailed: false };
+  const meta = { ...doc.data, emailSentAt: new Date().toISOString(), emailFailed: false, emailError: null };
   await putJson(env.DOCS_BUCKET, keys.docMeta(params.token), meta);
   return json(meta);
 }
