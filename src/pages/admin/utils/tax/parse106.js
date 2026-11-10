@@ -29,11 +29,21 @@ function codesOf(text) {
   const match = text.match(CODE_TOKEN_RE);
   return match ? [match[1], match[2]].filter((code) => code && CODE_TO_FIELD.has(code)) : [];
 }
-const AMOUNT_RE = /^\d{1,3}(?:,\d{3})+(?:\.\d{1,2})?$|^\d+(?:\.\d{1,2})?$/;
+// OCR sometimes reads the thousands comma as a dot ("21.733") — accepted as thousands.
+const DOT_THOUSANDS_RE = /^\d{1,3}(?:\.\d{3})+$/;
+const AMOUNT_RE = /^\d{1,3}(?:,\d{3})+(?:\.\d{1,2})?$|^\d+(?:\.\d{1,2})?$|^\d{1,3}(?:\.\d{3})+$/;
 const YEAR_LABELLED_RE = /(?:שנת\s*ה?מס|לשנת|בשנת)\s*:?\s*(20\d{2})/;
 const YEAR_RE = /(?<!\d)(20[1-4]\d)(?!\d)/g;
 const YEAR_TOKEN_RE = /^20[1-4]\d$/;
-const LINE_TOLERANCE = 0.006; // fraction of page height
+const LINE_TOLERANCE = 0.006; // fraction of page height (text layer); OCR passes a looser one
+
+/** Label fallback when a code is missing or misread (mainly OCR). */
+const LABEL_FALLBACKS = [
+  { field: 'income', re: /משכורת\s*ותשלומים/ },
+  { field: 'taxWithheld', re: /ניכויי\s*מס/ },
+  { field: 'pension', re: /הפקדות\s*(?:ה)?עובד.*לקצבה/ },
+  { field: 'insuredIncome', re: /הכנסה\s*מבוטחת/ },
+];
 
 /** Splits pdf.js items into whitespace tokens, spreading each token across the item's width. */
 function tokenize(items) {
@@ -53,21 +63,22 @@ function tokenize(items) {
   });
 }
 
-function groupLines(tokens) {
+function groupLines(tokens, tolerance = LINE_TOLERANCE) {
   const sorted = [...tokens].sort((a, b) => a.page - b.page || a.y - b.y);
   const lines = [];
   for (const token of sorted) {
     const line = lines.at(-1);
-    if (line && line.page === token.page && Math.abs(line.y - token.y) <= LINE_TOLERANCE) line.tokens.push(token);
+    if (line && line.page === token.page && Math.abs(line.y - token.y) <= tolerance) line.tokens.push(token);
     else lines.push({ page: token.page, y: token.y, tokens: [token] });
   }
   return lines;
 }
 
-const toAmount = (text) => Number(text.replace(/,/g, ''));
+const toAmount = (text) => Number(DOT_THOUSANDS_RE.test(text) ? text.replace(/\./g, '') : text.replace(/,/g, ''));
 
 const HEBREW_WORD_RE = /[֐-׿]{2,}/;
 const CURRENCY_TOKEN_RE = /^ש['"׳״]{1,2}ח$/;
+const TABLE_TOP_MARGIN = 0.035; // fraction of page height
 const MAX_PLAIN_DIGITS = 7; // longer bare numbers are IDs / file numbers, not amounts
 
 /** Every field code printed in a token, known or not — only when it looks like a code. */
@@ -98,7 +109,7 @@ function fixMirroredParens(text) {
  */
 function extractRows(lines) {
   const rows = [];
-  for (const { tokens: lineTokens } of lines) {
+  for (const { tokens: lineTokens, page, y } of lines) {
     const codeTokens = lineTokens.filter((t) => rawCodesOf(t.text).length);
     const codeSet = new Set(codeTokens);
     const amounts = lineTokens.filter((t) => !codeSet.has(t) && isAmountToken(t));
@@ -117,21 +128,28 @@ function extractRows(lines) {
     if (/\d{8,}/.test(label)) continue;
 
     const codes = [...new Set(codeTokens.flatMap((t) => rawCodesOf(t.text)))].sort();
-    rows.push({ codes, label, value: toAmount(amounts[0].text) });
+    rows.push({ codes, label, value: toAmount(amounts[0].text), page, y });
   }
-  return rows;
+
+  // The amounts table starts at the first row with a known field code (the salary row's
+  // heading sits just above it). Anything higher up is page header — dates, IDs, OCR noise.
+  const firstCoded = rows.find((row) => row.codes.some((code) => CODE_TO_FIELD.has(code)));
+  const kept = firstCoded
+    ? rows.filter((row) => row.page > firstCoded.page || (row.page === firstCoded.page && row.y >= firstCoded.y - TABLE_TOP_MARGIN))
+    : rows;
+  return kept.map(({ codes, label, value }) => ({ codes, label, value }));
 }
 
 /**
  * items: [{ str, x, y, width?, page? }] — x/y normalized 0..1, y from the top.
  * Returns { fields, rows, found, missing, taxYear, employeeId, employerName, hasText }.
  */
-export function parse106Items(items = []) {
+export function parse106Items(items = [], { lineTolerance = LINE_TOLERANCE } = {}) {
   const tokens = tokenize(items).filter((t) => t.text);
   const fullText = tokens.map((t) => t.text).join(' ');
   const hasText = /\d/.test(fullText) && tokens.length > 20;
 
-  const lines = groupLines(tokens);
+  const lines = groupLines(tokens, lineTolerance);
   const candidates = new Map(); // field → [amount]
   for (const { tokens: lineTokens } of lines) {
     const codes = lineTokens.filter((t) => codesOf(t.text).length);
@@ -155,6 +173,13 @@ export function parse106Items(items = []) {
   const fields = {};
   for (const [field, values] of candidates) fields[field] = Math.max(...values);
 
+  const rows = extractRows(lines);
+  for (const { field, re } of LABEL_FALLBACKS) {
+    if (field in fields) continue;
+    const match = rows.filter((row) => re.test(row.label)).map((row) => row.value);
+    if (match.length) fields[field] = Math.max(...match);
+  }
+
   const found = FIELD_CODES_106.filter(({ field }) => field in fields).map(({ field }) => field);
   const missing = FIELD_CODES_106.filter(({ field, required }) => required && !(field in fields)).map(
     ({ label }) => label
@@ -162,7 +187,7 @@ export function parse106Items(items = []) {
 
   return {
     fields,
-    rows: extractRows(lines),
+    rows,
     found,
     missing,
     taxYear: detectTaxYear(fullText),
