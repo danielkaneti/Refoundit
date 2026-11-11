@@ -49,6 +49,7 @@ function summarize(fields) {
 function Import106Panel({ fallbackYear, dispatch }) {
   const inputRef = useRef(null);
   const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState('');
   const [results, setResults] = useState([]);
 
   const openPicker = useCallback(() => inputRef.current?.click(), []);
@@ -60,14 +61,18 @@ function Import106Panel({ fallbackYear, dispatch }) {
       if (!files.length) return;
       setBusy(true);
       const batch = [];
-      for (const file of files) {
-        const result = await read106Pdf(file);
-        let note = null;
+      for (const [index, file] of files.entries()) {
+        const prefix = `${index + 1}/${files.length} · ${file.name}`;
+        setProgress(prefix);
+        const result = await read106Pdf(file, { onStatus: (message) => setProgress(`${prefix} — ${message}`) });
+        let note = result.ocr
+          ? 'הקובץ הוא תמונה — הערכים זוהו ב-OCR. יש לבדוק כל ערך מול הטופס.'
+          : null;
         if (result.status !== 'error') {
           let year = result.taxYear;
           if (!year) {
             year = fallbackYear;
-            note = `שנת המס לא זוהתה — שויך לשנת ${year}. יש לוודא.`;
+            note = [note, `שנת המס לא זוהתה — שויך לשנת ${year}. יש לוודא.`].filter(Boolean).join(' ');
           }
           if (!TAX_YEARS[year]) {
             batch.push({ ...result, status: 'error', error: `שנת המס ${year} אינה נתמכת` });
@@ -90,7 +95,10 @@ function Import106Panel({ fallbackYear, dispatch }) {
         batch.push({ ...result, note });
       }
       setResults((prev) => [...batch, ...prev]);
+      setProgress('');
       setBusy(false);
+      // Free the OCR workers' WASM memory once a batch that needed them is done.
+      if (batch.some((r) => r.ocr)) import('../../utils/tax/ocr').then(({ terminateOcr }) => terminateOcr());
     },
     [dispatch, fallbackYear]
   );
@@ -103,8 +111,8 @@ function Import106Panel({ fallbackYear, dispatch }) {
             ייבוא טופסי 106 מ-PDF
           </SubHeading>
           <Muted>
-            הקבצים נקראים בדפדפן בלבד ואינם נשלחים לשרת. נתמכים קובצי PDF דיגיטליים (לא סריקות). יש לבדוק את
-            הערכים שנקלטו מול הטופס.
+            הקבצים נקראים בדפדפן בלבד ואינם נשלחים לשרת. קובצי PDF דיגיטליים נקראים במדויק; צילומי מסך וסריקות
+            מזוהים ב-OCR ולוקח להם מספר שניות. יש לבדוק את הערכים שנקלטו מול הטופס.
           </Muted>
         </div>
         <IconButton
@@ -128,6 +136,12 @@ function Import106Panel({ fallbackYear, dispatch }) {
         />
       </Row>
 
+      {busy && progress && (
+        <Muted role="status" style={{ marginTop: 12 }}>
+          {progress}
+        </Muted>
+      )}
+
       {results.length > 0 && (
         <Results aria-live="polite" aria-label="תוצאות ייבוא">
           {results.map((r, index) => (
@@ -136,6 +150,7 @@ function Import106Panel({ fallbackYear, dispatch }) {
                 <FileName>{r.fileName}</FileName>
                 <Badge $tone={STATUS[r.status].tone}>{STATUS[r.status].label}</Badge>
                 {r.importedYear && <Badge $tone="expired">שנת {r.importedYear}</Badge>}
+                {r.ocr && <Badge $tone="pending">OCR</Badge>}
               </Row>
               {r.error && <Muted>{r.error}</Muted>}
               {r.fields && r.status !== 'error' && <Muted>{summarize(r.fields)}</Muted>}
